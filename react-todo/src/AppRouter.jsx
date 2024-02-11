@@ -45,6 +45,9 @@ export default function AppRouter() {
 	};
 
 	const toggle = (_id) => {
+		fetch(`${api}/toggle/${_id}`, {
+			method: "put",
+		});
 		setList(
 			list.map((item) => {
 				if (item._id === _id) item.done = !item.done;
@@ -54,6 +57,9 @@ export default function AppRouter() {
 	};
 
 	const clear = () => {
+		fetch(`${api}`, {
+			method: "delete",
+		});
 		setList(list.filter((item) => !item.done));
 	};
 

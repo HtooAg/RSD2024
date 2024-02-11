@@ -74,6 +74,31 @@ app.put("/task/:id", async (req, res) => {
 	}
 });
 
+app.put("/task/toggle/:id", async (req, res) => {
+	const { id } = req.params;
+	const _id = new ObjectId(id);
+
+	const current = await task.findOne({ _id });
+	const done = !current.done;
+
+	const data = await task.updateOne(
+		{ _id },
+		{
+			$set: {
+				done,
+			},
+		}
+	);
+
+	const result = await task.findOne({ _id });
+	return res.json(result);
+});
+
+app.delete("/task", async (req, res) => {
+	const result = await task.deleteMany({ done: true });
+	return res.json(result);
+});
+
 app.listen(8888, () => {
 	console.log("Backend API running at 8888!");
 });
