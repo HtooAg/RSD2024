@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
+import Likes from "./pages/Likes";
 
 const router = createBrowserRouter([
 	{
@@ -12,22 +13,26 @@ const router = createBrowserRouter([
 		children: [
 			{
 				path: "/",
-				element: <Home />,
+				element: <Home />
 			},
 			{
 				path: "/login",
-				element: <Login />,
+				element: <Login />
 			},
 			{
 				path: "/profile",
-				element: <Profile />,
+				element: <Profile />
 			},
 			{
 				path: "/register",
-				element: <Register />,
+				element: <Register />
 			},
-		],
-	},
+			{
+				path: "/likes/:id",
+				element: <Likes />
+			}
+		]
+	}
 ]);
 
 export default function App() {

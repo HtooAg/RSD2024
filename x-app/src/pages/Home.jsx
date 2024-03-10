@@ -8,23 +8,27 @@ export default function Home() {
 	const [posts, setPosts] = useState([]);
 	const { auth, authUser } = useAuth();
 
-	const like = (_id) => {
-		const result = posts.map((post) => {
+	const like = _id => {
+		const result = posts.map(post => {
 			if (post._id === _id) {
 				post.likes.push(authUser._id);
 			}
+
 			return post;
 		});
+
 		setPosts(result);
 	};
 
-	const unlike = (_id) => {
-		const result = posts.map((post) => {
+	const unlike = _id => {
+		const result = posts.map(post => {
 			if (post._id === _id) {
-				post.likes = post.likes.filter((like) => like !== authUser._id);
+				post.likes = post.likes.filter(like => like !== authUser._id);
 			}
+
 			return post;
 		});
+
 		setPosts(result);
 	};
 
@@ -48,9 +52,8 @@ export default function Home() {
 							display: "flex",
 							height: 200,
 							alignItems: "center",
-							justifyContent: "center",
-						}}
-					>
+							justifyContent: "center"
+						}}>
 						<CircularProgress />
 					</Box>
 					<Box>
@@ -61,7 +64,7 @@ export default function Home() {
 				</>
 			) : (
 				<>
-					{posts.map((post) => (
+					{posts.map(post => (
 						<PostCard
 							post={post}
 							like={like}

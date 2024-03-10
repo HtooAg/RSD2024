@@ -5,7 +5,7 @@ import {
 	Notifications as NotiIcon,
 	DarkMode as DarkModeIcon,
 	LightMode as LightModeIcon,
-	ArrowBack as BackIcon,
+	ArrowBack as BackIcon
 } from "@mui/icons-material";
 import { useUIState } from "../providers/UIStateProvider";
 import { useAppTheme } from "../providers/AppThemeProvider";
@@ -15,7 +15,7 @@ export default function Header() {
 	const { setOpenDrawer } = useUIState();
 	const { mode, setMode } = useAppTheme();
 	const navigate = useNavigate();
-	const pathname = useLocation();
+	const { pathname } = useLocation();
 	return (
 		<AppBar position="static" sx={{ bgcolor: "header.background" }}>
 			<Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -23,34 +23,36 @@ export default function Header() {
 					<IconButton
 						edge="start"
 						color="inherit"
-						onClick={() => setOpenDrawer(true)}
-					>
+						onClick={() => setOpenDrawer(true)}>
 						<MenuIcon />
 					</IconButton>
 				) : (
 					<IconButton
 						edge="start"
 						color="inherit"
-						onClick={() => navigate(-1)}
-					>
+						onClick={() => navigate(-1)}>
 						<BackIcon />
 					</IconButton>
 				)}
 
-				<XIcon />
+				<IconButton
+					disableRipple
+					onClick={() => {
+						navigate("/");
+					}}>
+					<XIcon />
+				</IconButton>
 				<Box>
 					{mode === "dark" ? (
 						<IconButton
 							color="inherit"
-							onClick={() => setMode("light")}
-						>
+							onClick={() => setMode("light")}>
 							<LightModeIcon />
 						</IconButton>
 					) : (
 						<IconButton
 							color="inherit"
-							onClick={() => setMode("dark")}
-						>
+							onClick={() => setMode("dark")}>
 							<DarkModeIcon />
 						</IconButton>
 					)}
