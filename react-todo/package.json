@@ -15,6 +15,7 @@
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.15.6",
     "@mui/material": "^5.15.6",
+    "dotenv": "^16.4.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.3"
@@ -28,5 +29,10 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.1",
     "vite": "^4.4.0"
-  }
+  },
+  "description": "## Sources from Sir.EiMaung's Rockstar Developer Course",
+  "main": "vite.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

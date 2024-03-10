@@ -6,6 +6,8 @@ import Edit from "./Edit";
 
 const api = "http://localhost:8888/task";
 export default function AppRouter() {
+	console.log(import.meta.env.VITE_API);
+
 	const [list, setList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 
