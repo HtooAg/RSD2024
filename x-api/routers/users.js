@@ -17,6 +17,7 @@ const mongo = new MongoClient(process.env.MONGO_HOST);
 
 const xdb = mongo.db("x");
 const xusers = xdb.collection("users");
+const xposts = xdb.collection("posts");
 
 router.get("/verify", auth, async (req, res) => {
 	return res.json(res.locals.user);
@@ -31,6 +32,20 @@ router.get("/users", auth, async (req, res) => {
 	setTimeout(() => {
 		return res.json(data);
 	}, 1000);
+});
+
+router.get("/users/likes/:id", async (req, res) => {
+	const { id } = req.params;
+	const post = await xposts.findOne({ _id: new ObjectId(id) });
+	const users = await xusers
+		.find({
+			_id: {
+				$in: post.likes
+			}
+		})
+		// .sort({ name: 1 })
+		.toArray();
+	return res.json(users);
 });
 
 router.get("/users/:id", async (req, res) => {
@@ -53,8 +68,8 @@ router.post("/login", async (req, res) => {
 		{
 			projection: {
 				followers: 0,
-				following: 0,
-			},
+				following: 0
+			}
 		}
 	);
 	if (user) {
@@ -82,7 +97,7 @@ router.post("/register", async (req, res) => {
 		profile,
 		password: hash,
 		created: new Date(),
-		followers: [],
+		followers: []
 	};
 	const result = await xusers.insertOne(user);
 	user._id = result.insertedId;

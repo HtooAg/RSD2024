@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Box, IconButton } from "@mui/material";
+import { AppBar, Toolbar, Box, IconButton, Badge } from "@mui/material";
 import {
 	Menu as MenuIcon,
 	X as XIcon,
@@ -57,7 +57,9 @@ export default function Header() {
 						</IconButton>
 					)}
 					<IconButton color="inherit" edge="end">
-						<NotiIcon />
+						<Badge badgeContent={1} color="error">
+							<NotiIcon />
+						</Badge>
 					</IconButton>
 				</Box>
 			</Toolbar>

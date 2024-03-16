@@ -81,7 +81,11 @@ export default function PostCard({ post, like, unlike }) {
 							</Typography>
 						</Box>
 					</Box>
-					<IconButton>
+					<IconButton
+						onClick={e => {
+							setShowMenu(true);
+							setMenuPosition(e.currentTarget);
+						}}>
 						<MenuIcon />
 					</IconButton>
 					<Menu

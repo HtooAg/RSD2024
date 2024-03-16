@@ -7,7 +7,7 @@ import {
 	ListItemButton,
 	Avatar,
 	Typography,
-	List,
+	List
 } from "@mui/material";
 
 import {
@@ -15,7 +15,7 @@ import {
 	Person as ProfileIcon,
 	PersonAdd as RegisterIcon,
 	Login as LoginIcon,
-	Logout as LogoutIcon,
+	Logout as LogoutIcon
 } from "@mui/icons-material";
 
 import { useNavigate } from "react-router-dom";
@@ -34,8 +34,7 @@ export default function AppDrawer() {
 			open={openDrawer}
 			onClose={() => {
 				setOpenDrawer(false);
-			}}
-		>
+			}}>
 			<Box sx={{ width: 350 }}>
 				<Box
 					sx={{
@@ -44,9 +43,8 @@ export default function AppDrawer() {
 						display: "flex",
 						flexDirection: "row",
 						alignItems: "flex-end",
-						p: 3,
-					}}
-				>
+						p: 3
+					}}>
 					{auth && (
 						<>
 							<Box sx={{ display: "flex", alignItems: "center" }}>
@@ -54,9 +52,8 @@ export default function AppDrawer() {
 									sx={{
 										width: 98,
 										height: 98,
-										bgcolor: pink[500],
-									}}
-								>
+										bgcolor: pink[500]
+									}}>
 									{authUser.name[0]}
 								</Avatar>
 								<Box sx={{ ml: 3 }}>
@@ -64,17 +61,15 @@ export default function AppDrawer() {
 										sx={{
 											fontSize: 21,
 											fontWeight: "bold",
-											color: blue[500],
-										}}
-									>
+											color: blue[500]
+										}}>
 										{authUser.name}
 									</Typography>
 									<Typography
 										sx={{
 											fontSize: 16,
-											color: grey[400],
-										}}
-									>
+											color: grey[400]
+										}}>
 										@{authUser.handle}
 									</Typography>
 								</Box>
@@ -91,8 +86,7 @@ export default function AppDrawer() {
 									onClick={() => {
 										navigate("/");
 										setOpenDrawer(false);
-									}}
-								>
+									}}>
 									<ListItemIcon>
 										<HomeIcon />
 									</ListItemIcon>
@@ -103,10 +97,9 @@ export default function AppDrawer() {
 								<ListItemButton
 									disableRipple
 									onClick={() => {
-										navigate("/profile");
+										navigate(`/profile/${authUser._id}`);
 										setOpenDrawer(false);
-									}}
-								>
+									}}>
 									<ListItemIcon>
 										<ProfileIcon />
 									</ListItemIcon>
@@ -121,8 +114,7 @@ export default function AppDrawer() {
 										setAuthUser({});
 										setOpenDrawer(false);
 										localStorage.removeItem("token");
-									}}
-								>
+									}}>
 									<ListItemIcon>
 										<LogoutIcon />
 									</ListItemIcon>
@@ -140,8 +132,7 @@ export default function AppDrawer() {
 										navigate("/register");
 										setAuth(false);
 										setOpenDrawer(false);
-									}}
-								>
+									}}>
 									<ListItemIcon>
 										<RegisterIcon />
 									</ListItemIcon>
@@ -154,8 +145,7 @@ export default function AppDrawer() {
 									onClick={() => {
 										navigate("/login");
 										setOpenDrawer(false);
-									}}
-								>
+									}}>
 									<ListItemIcon>
 										<LoginIcon />
 									</ListItemIcon>

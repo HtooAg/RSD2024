@@ -4,17 +4,18 @@ import {
 	Button,
 	IconButton,
 	Typography,
-	Alert,
+	Alert
 } from "@mui/material";
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import {
 	Visibility as ShowPassIcon,
-	VisibilityOff as HidePassIcon,
+	VisibilityOff as HidePassIcon
 } from "@mui/icons-material";
 
 import { useNavigate } from "react-router-dom";
+import { useUIState } from "../providers/UIStateProvider";
 
 export default function Register() {
 	const nameRef = useRef();
@@ -23,6 +24,7 @@ export default function Register() {
 	const profileRef = useRef();
 	const [hasError, setHasError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
+	const { setOpenFeedback, setFeedbackMessage } = useUIState();
 
 	const [showPassword, setShowPassword] = useState(false);
 	const handleClickShowPassword = () => {
@@ -38,7 +40,7 @@ export default function Register() {
 			</Typography>
 			<Box>
 				<form
-					onSubmit={(e) => {
+					onSubmit={e => {
 						e.preventDefault();
 						const name = nameRef.current.value;
 						const handle = handleRef.current.value;
@@ -59,21 +61,22 @@ export default function Register() {
 									name,
 									handle,
 									password,
-									profile,
+									profile
 								}),
 								headers: {
-									"Content-Type": "application/json",
-								},
+									"Content-Type": "application/json"
+								}
 							});
 							if (!res.ok) {
 								setHasError(true);
 								setErrorMessage((await res.json()).msg);
 								return false;
 							}
+							setFeedbackMessage("Account created");
+							setOpenFeedback(true);
 							navigate("/login");
 						})();
-					}}
-				>
+					}}>
 					{hasError && (
 						<Alert severity="warning" sx={{ mb: 4 }}>
 							{errorMessage}
@@ -96,15 +99,14 @@ export default function Register() {
 							endAdornment: (
 								<IconButton
 									onClick={handleClickShowPassword}
-									edge="end"
-								>
+									edge="end">
 									{showPassword ? (
 										<HidePassIcon />
 									) : (
 										<ShowPassIcon />
 									)}
 								</IconButton>
-							),
+							)
 						}}
 					/>
 					<TextField
