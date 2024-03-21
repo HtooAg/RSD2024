@@ -5,6 +5,7 @@ const app = express();
 
 const cors = require("cors");
 app.use(cors());
+app.use("/static", express.static("./photos"));
 
 const { usersRouter } = require("./routers/users");
 const { postsRouter } = require("./routers/posts");

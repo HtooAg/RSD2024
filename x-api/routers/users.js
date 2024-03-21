@@ -19,10 +19,51 @@ const xdb = mongo.db("x");
 const xusers = xdb.collection("users");
 const xposts = xdb.collection("posts");
 
+const multer = require("multer");
+const profileUpload = multer({ dest: "photos/profiles/" });
+const coverUpload = multer({ dest: "photos/covers/" });
+
 router.get("/verify", auth, async (req, res) => {
 	return res.json(res.locals.user);
 });
 
+router.post(
+	"/users/profile",
+	auth,
+	profileUpload.single("profile"),
+	async (req, res) => {
+		const id = res.locals.user._id;
+		const { filename } = req.file;
+
+		const result = await xusers.updateOne(
+			{ _id: new ObjectId(id) },
+			{
+				$set: { profile: filename },
+			}
+		);
+
+		return res.json(result);
+	}
+);
+
+router.post(
+	"/users/cover",
+	auth,
+	coverUpload.single("cover"),
+	async (req, res) => {
+		const id = res.locals.user._id;
+		const { filename } = req.file;
+
+		const result = await xusers.updateOne(
+			{ _id: new ObjectId(id) },
+			{
+				$set: { cover: filename },
+			}
+		);
+
+		return res.json(result);
+	}
+);
 router.get("/users", auth, async (req, res) => {
 	const data = await xusers
 		.find()
@@ -40,8 +81,8 @@ router.get("/users/likes/:id", async (req, res) => {
 	const users = await xusers
 		.find({
 			_id: {
-				$in: post.likes
-			}
+				$in: post.likes,
+			},
 		})
 		// .sort({ name: 1 })
 		.toArray();
@@ -68,8 +109,8 @@ router.post("/login", async (req, res) => {
 		{
 			projection: {
 				followers: 0,
-				following: 0
-			}
+				following: 0,
+			},
 		}
 	);
 	if (user) {
@@ -97,7 +138,7 @@ router.post("/register", async (req, res) => {
 		profile,
 		password: hash,
 		created: new Date(),
-		followers: []
+		followers: [],
 	};
 	const result = await xusers.insertOne(user);
 	user._id = result.insertedId;

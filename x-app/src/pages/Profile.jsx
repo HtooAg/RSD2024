@@ -4,37 +4,57 @@ import {
 	Typography,
 	CircularProgress,
 	Avatar,
-	Button
+	Button,
 } from "@mui/material";
 
 import { useEffect, useState } from "react";
 import PostCard from "../components/PostCard";
 import { useAuth } from "../providers/AuthProvider";
 
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { blue, pink } from "@mui/material/colors";
 export default function Profile() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [posts, setPosts] = useState([]);
-	const { auth, authUser } = useAuth();
-	const [user, setUser] = useState({});
 	const [photo, setPhoto] = useState("");
 	const [cover, setCover] = useState("");
+	const [user, setUser] = useState({});
+
+	const { authUser } = useAuth();
 	const { id } = useParams();
+
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		(async () => {
 			setIsLoading(true);
+
 			const api = import.meta.env.VITE_API_URL;
-			const res = await fetch(`${api}/posts/profile/${id}`);
-			const data = await res.json();
-			setPosts(data);
+
+			const posts_res = await fetch(`${api}/posts/profile/${id}`);
+			setPosts(await posts_res.json());
+
+			const user_res = await fetch(`${api}/users/${id}`);
+			const user_data = await user_res.json();
+
+			setUser(user_data);
+
+			const profilePhoto = `${import.meta.env.VITE_PROFILE_PHOTOS}/${
+				user_data.profile
+			}`;
+			setPhoto(profilePhoto);
+
+			const coverPhoto = `${import.meta.env.VITE_COVER_PHOTOS}/${
+				user_data.cover
+			}`;
+			setCover(coverPhoto);
+
 			setIsLoading(false);
 		})();
 	}, []);
 
-	const like = _id => {
-		const result = posts.map(post => {
+	const like = (_id) => {
+		const result = posts.map((post) => {
 			if (post._id === _id) {
 				post.likes.push(authUser._id);
 			}
@@ -45,10 +65,10 @@ export default function Profile() {
 		setPosts(result);
 	};
 
-	const unlike = _id => {
-		const result = posts.map(post => {
+	const unlike = (_id) => {
+		const result = posts.map((post) => {
 			if (post._id === _id) {
-				post.likes = post.likes.filter(like => like !== authUser._id);
+				post.likes = post.likes.filter((like) => like !== authUser._id);
 			}
 
 			return post;
@@ -57,48 +77,74 @@ export default function Profile() {
 		setPosts(result);
 	};
 
+	const remove = (_id) => {
+		setPosts(posts.filter((post) => post._id !== _id));
+	};
+
 	const getFile = async () => {
 		const [fileHandle] = await window.showOpenFilePicker({
 			types: [
 				{
 					description: "Images",
 					accept: {
-						"image/*": [".png", ".jpeg", ".jpg"]
-					}
-				}
+						"image/*": [".png", ".jpeg", ".jpg"],
+					},
+				},
 			],
 			excludeAcceptAllOption: true,
-			multiple: false
+			multiple: false,
 		});
-
 		return await fileHandle.getFile();
 	};
 
-	const changePhoto = async e => {
-		const uid = "auto_id";
-		const api = "api_url";
+	const changePhoto = async (e) => {
 		const file = await getFile();
-
 		setPhoto(URL.createObjectURL(file));
 
 		const fileName =
-			file.type === "image/png" ? `${uid}-cover.png` : `${uid}-cover.jpg`;
+			file.type === "image/png"
+				? `${authUser._id}-profile.png`
+				: `${authUser._id}-profile.jpg`;
 
 		const formData = new FormData();
-		formData.append("photo", file, fileName);
-	};
-	const changeCover = async e => {
-		const uid = "auto_id";
-		const api = "api_url";
-		const file = await getFile();
+		formData.append("profile", file, fileName);
 
+		const api = import.meta.env.VITE_API_URL;
+		const token = localStorage.getItem("token");
+		const res = await fetch(`${api}/users/profile`, {
+			method: "post",
+			body: formData,
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+
+		return res.ok;
+	};
+
+	const changeCover = async (e) => {
+		const file = await getFile();
 		setCover(URL.createObjectURL(file));
 
 		const fileName =
-			file.type === "image/png" ? `${uid}-cover.png` : `${uid}-cover.jpg`;
+			file.type === "image/png"
+				? `${authUser._id}-cover.png`
+				: `${authUser._id}-cover.jpg`;
 
 		const formData = new FormData();
-		formData.append("photo", file, fileName);
+		formData.append("cover", file, fileName);
+
+		const api = import.meta.env.VITE_API_URL;
+		const token = localStorage.getItem("token");
+		const res = await fetch(`${api}/users/cover`, {
+			method: "post",
+			body: formData,
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+
+		return res.ok;
 	};
 
 	return (
@@ -109,30 +155,34 @@ export default function Profile() {
 					height: 200,
 					borderRadius: 5,
 					cursor: "pointer",
-					overflow: "hidden"
+					overflow: "hidden",
 				}}
 				onClick={async () => {
-					changeCover();
-				}}>
+					if (user._id === authUser._id) changeCover();
+				}}
+			>
 				<img src={cover} width="100%" alt="" />
 			</Box>
 			<Box
 				sx={{
 					marginTop: "-64px",
 					marginBottom: "40px",
-					textAlign: "center"
-				}}>
+					textAlign: "center",
+				}}
+			>
 				<Button
 					onClick={async () => {
-						changePhoto(authUser._id);
-					}}>
+						if (user._id === authUser._id) changePhoto();
+					}}
+				>
 					<Avatar
 						src={photo}
 						sx={{
 							background: pink[500],
 							width: 128,
-							height: 128
-						}}>
+							height: 128,
+						}}
+					>
 						{/* {authUser.name[0]} */}
 					</Avatar>
 				</Button>
@@ -144,8 +194,9 @@ export default function Profile() {
 							display: "flex",
 							height: 200,
 							alignItems: "center",
-							justifyContent: "center"
-						}}>
+							justifyContent: "center",
+						}}
+					>
 						<CircularProgress />
 					</Box>
 					<Box>
@@ -156,7 +207,7 @@ export default function Profile() {
 				</>
 			) : (
 				<>
-					{posts.map(post => (
+					{posts.map((post) => (
 						<PostCard
 							post={post}
 							like={like}
